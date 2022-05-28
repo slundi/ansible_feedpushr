@@ -3,6 +3,14 @@
 
 # Where to install the binaries
 feedpushr_install_dir: /opt/feedpushr
+# User that run the Feedpushr service
+feedpushr_user: www-data
+# Group that run the Feedpushr service
+feedpushr_group: www-data
+# admin user for the basic auth, will run `htpasswd -B -c .htpasswd admin`
+feedpushr_admin_user: admin
+# admin password
+feedpushr_admin_psw: "Change-Me!"
 # Database location, default is "boltdb://data.db"
 feedpushr_db: boltdb://data.db
 # HTTP listen address, default is ":8080" (examples: `localhost:8080` or `:8080` for all interfaces)

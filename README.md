@@ -13,6 +13,10 @@ Nothing, the author of feedpusher is providing all binaries for common Linux arc
 | Variable | Feedpushr variable | Default value | Description |
 |----------|:-------------:|--------------------|-------------|
 | `feedpushr_install_dir` | | `/opt/feedpushr` | Where to install the binaries
+| `feedpushr_user` | | `www-data` | User that run the Feedpushr service
+| `feedpushr_group` | | `www-data` | Group that run the Feedpushr service
+| `feedpushr_admin_user` | | `admin` | Admin user, it'll run `htpasswd -B -c .htpasswd admin`
+| `feedpushr_admin_user` | | `Change-Me!` |
 | `feedpushr_db` | `FP_DB` | `boltdb://data.db` | Database location, default is "boltdb://data.db"
 | `feedpushr_listen` | `FP_LISTEN_ADDR` | `:8080` | HTTP listen address, default is ":8080" (examples: `localhost:8080` or `:8080` for all interfaces)
 | `feedpushr_log_level` | `FP_LOG_LEVEL` | `info` | Logging level, default is "info". Available levels are: `debug`, `info`, `warn` and `error`.

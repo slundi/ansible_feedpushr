@@ -1,0 +1,12 @@
+[Unit]
+Description=A simple feed aggregator service with sugar on top
+After=network.target
+
+[Service]
+User={{ feedpushr_user }}
+Group={{ feedpushr_group }}
+EnvironmentFile={{ feedpushr_install_dir }}/config.env
+ExecStart={{ feedpushr_install_dir }}/feedpushr
+
+[Install]
+WantedBy=multi-user.target

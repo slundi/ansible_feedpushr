@@ -44,3 +44,27 @@
     dest: "{{ feedpushr_install_dir }}"
     remote_src: true
 
+- name: Copying env file
+  ansible.builtin.template:
+    src: config.env.j2
+    dest: "{{ feedpushr_install_dir }}/config.env"
+    mode: 644
+
+- name: Copying service file
+  ansible.builtin.template:
+    src: feedpushr.service.j2
+    dest: /lib/systemd/system/feedpushr.service
+    mode: 644
+  notify:
+    - reload systemctl
+
+- name: Enable service
+  service:
+    name: feedpushr
+    enabled: yes
+- name: Start service
+  service:
+    name: feedpushr
+    state: started
+
+
