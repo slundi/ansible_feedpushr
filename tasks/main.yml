@@ -1,2 +1,46 @@
 ---
 # tasks file for roles/feedpushr
+
+# - name: Delete existing archive
+#   file:
+#     state: absent
+#     path: /tmp/feedpushr-latest.tgz
+
+- name: Creating Feedpushr binary directory
+  file:
+    state: directory
+    path: "{{ feedpushr_install_dir }}"
+
+- name: Getting latest release information
+  uri:
+    url: https://api.github.com/repos/ncarlier/feedpushr/releases/latest
+    return_content: true
+    body_format: json
+  register: json_reponse
+
+- name: Get URL if arch is amd64 or x86_64
+  set_fact:
+    download_link: "https://github.com/ncarlier/feedpushr/releases/download/{{ json_reponse.json.tag_name }}/feedpushr-linux-amd64.tgz"
+  when: ansible_architecture in ['x86_64', 'amd64']
+
+- name: Get URL if arch is arm
+  set_fact:
+    download_link: "https://github.com/ncarlier/feedpushr/releases/download/{{ json_reponse.json.tag_name }}/feedpushr-linux-amd64.tgz"
+  when: ansible_architecture.startswith(('armv', 'aarch', 'ppc'))
+
+- name: Get URL if arch is arm64
+  set_fact:
+    download_link: "https://github.com/ncarlier/feedpushr/releases/download/{{ json_reponse.json.tag_name }}/feedpushr-linux-amd64.tgz"
+  when: ansible_architecture.startswith('arm64')
+
+# - name: Download latest release
+#   get_url:                                                           
+#     url: "{{ download_link }}"                   
+#     dest: /tmp/feedpushr-latest.tgz
+
+- name: Extracting archive
+  unarchive:
+    src: "{{ download_link }}" # /tmp/feedpushr-latest.tgz
+    dest: "{{ feedpushr_install_dir }}"
+    remote_src: true
+
