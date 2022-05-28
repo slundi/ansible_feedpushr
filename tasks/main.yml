@@ -6,6 +6,10 @@
 #     state: absent
 #     path: /tmp/feedpushr-latest.tgz
 
+- name: Install apache2-utils for the htpasswd command
+  apt:
+    name: apache2-utils
+
 - name: Creating Feedpushr binary directory
   file:
     state: directory
@@ -49,6 +53,9 @@
     src: config.env.j2
     dest: "{{ feedpushr_install_dir }}/config.env"
     mode: 644
+
+- name: Creating basic auth file
+  shell: 'htpasswd -b -B -c {{ feedpushr_authn }} {{feedpushr_admin_user}} "{{feedpushr_admin_psw}}"''
 
 - name: Copying service file
   ansible.builtin.template:
