@@ -55,7 +55,7 @@
     mode: 644
 
 - name: Creating basic auth file
-  shell: 'htpasswd -b -B -c {{ feedpushr_authn }} {{feedpushr_admin_user}} "{{feedpushr_admin_psw}}"''
+  shell: 'htpasswd -b -B -c {{ feedpushr_authn }} {{feedpushr_admin_user}} "{{feedpushr_admin_psw}}"'
 
 - name: Copying service file
   ansible.builtin.template:
@@ -73,5 +73,3 @@
   service:
     name: feedpushr
     state: started
-
-
