@@ -6,6 +6,24 @@
 #     state: absent
 #     path: /tmp/feedpushr-latest.tgz
 
+- name: Stop service Feedpushr
+  block:
+    - name: Attempt to stop the service
+      ansible.builtin.service:
+        name: feedpushr
+        state: stopped
+    - name: Enable service
+      service:
+        name: feedpushr
+        enabled: no
+  rescue:
+    - name: Get the list of services
+      service_facts:
+    - name: Verify that feedpushr is not installed
+      assert:
+        that:
+          - "'feedpushr.service' not in services"
+
 - name: Install apache2-utils for the htpasswd command
   apt:
     name: apache2-utils
@@ -14,6 +32,8 @@
   file:
     state: directory
     path: "{{ feedpushr_install_dir }}"
+    owner: "{{ feedpushr_user }}"
+    group: "{{ feedpushr_group }}"
 
 - name: Getting latest release information
   uri:
@@ -29,13 +49,15 @@
 
 - name: Get URL if arch is arm
   set_fact:
-    download_link: "https://github.com/ncarlier/feedpushr/releases/download/{{ json_reponse.json.tag_name }}/feedpushr-linux-amd64.tgz"
+    download_link: "https://github.com/ncarlier/feedpushr/releases/download/{{ json_reponse.json.tag_name }}/feedpushr-linux-arm.tgz"
   when: ansible_architecture.startswith(('armv', 'aarch', 'ppc'))
 
 - name: Get URL if arch is arm64
   set_fact:
-    download_link: "https://github.com/ncarlier/feedpushr/releases/download/{{ json_reponse.json.tag_name }}/feedpushr-linux-amd64.tgz"
+    download_link: "https://github.com/ncarlier/feedpushr/releases/download/{{ json_reponse.json.tag_name }}/feedpushr-linux-arm64.tgz"
   when: ansible_architecture.startswith('arm64')
+
+#sources: "https://github.com/ncarlier/feedpushr/archive/refs/tag/{{ json_reponse.json.tag_name }}.tar.gz"
 
 # - name: Download latest release
 #   get_url:                                                           
@@ -47,12 +69,21 @@
     src: "{{ download_link }}" # /tmp/feedpushr-latest.tgz
     dest: "{{ feedpushr_install_dir }}"
     remote_src: true
+    owner: "{{ feedpushr_user }}"
+    group: "{{ feedpushr_group }}"
+
+- name: Setting app as executable
+  ansible.builtin.file:
+    path: "{{ feedpushr_install_dir }}/feedpushr"
+    mode: u+x,g+x,o+x
 
 - name: Copying env file
   ansible.builtin.template:
     src: config.env.j2
     dest: "{{ feedpushr_install_dir }}/config.env"
-    mode: 644
+    owner: "{{ feedpushr_user }}"
+    group: "{{ feedpushr_group }}"
+    mode: "0644"
 
 - name: Creating basic auth file
   shell: 'htpasswd -b -B -c {{ feedpushr_authn }} {{feedpushr_admin_user}} "{{feedpushr_admin_psw}}"'
@@ -61,7 +92,9 @@
   ansible.builtin.template:
     src: feedpushr.service.j2
     dest: /lib/systemd/system/feedpushr.service
-    mode: 644
+    owner: root
+    group: root
+    mode: "0644"
   notify:
     - reload systemctl
 
