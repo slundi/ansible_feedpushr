@@ -1,0 +1,15 @@
+#!/bin/bash
+
+cd {{feedpushr_install_dir}}
+./feedpushr -listen-addr "{{feedpushr_listen}}" {% if feedpushr_clear_config %}-clear-config {% endif %} \
+    {% if feedpushr_authn %}-authn {{feedpushr_authn}} {% endif %} {% if feedpushr_authorized_username != "*" %}-authorized-username {{feedpushr_authorized_username}} {% endif %} \
+    {% if feedpushr_delay != "1m" %}-delay {{feedpushr_delay}} {% endif %} {% if feedpushr_fan_out_delay != "0s" %}-fan-out-delay {{feedpushr_fan_out_delay}} {% endif %} {% if feedpushr_max_nb_feeds > 0 %}-max-nb-feeds {{feedpushr_max_nb_feeds}} {% endif %} {% if feedpushr_max_nb_output > 0 %}-max-nb-outputs {{feedpushr_max_nb_output}} {% endif %} \
+    {% if feedpushr_clear_cache %}-clear-cache {% endif %} {% if feedpushr_retention_duration != "72h" %}-cache-retention {{feedpushr_retention_duration}} {% endif %} \
+    {% if feedpushr_log_level != 'info' %}-log-level {{feedpushr_log_level}} {% endif %} {% if feedpushr_log_pretty %}-log-pretty {% endif %} {% if feedpushr_log_file %}-log-output {{feedpushr_log_file}}{% endif %} \
+    {% if feedpushr_timeout != "5s" %}-timeout "{{feedpushr_timeout}}" {% endif %} \
+    {% if feedpushr_public_url %}-public-url "{{feedpushr_public_url}}" {% endif %} \
+    {% if feedpushr_sentry_dsn %}-sentry-dsn "{{feedpushr_sentry_dsn}}" {% endif %} \
+    {% if feedpushr_explore_provider != "default" %}-explore-provider {{feedpushr_explore_provider}} {% endif %} \
+    {% if feedpushr_import %}-import {{feedpushr_import}} {% endif %} \
+    {% if feedpushr_plugins %}-plugin "{{feedpushr_plugins}}" {% endif %} \
+    -db {{feedpushr_db}}

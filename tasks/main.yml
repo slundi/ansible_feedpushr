@@ -6,6 +6,11 @@
 #     state: absent
 #     path: /tmp/feedpushr-latest.tgz
 
+- name: 'Check mandatory variables are defined'
+  assert:
+    that:
+      - feedpushr_db is defined
+
 - name: Stop service Feedpushr
   block:
     - name: Attempt to stop the service
@@ -77,16 +82,24 @@
     path: "{{ feedpushr_install_dir }}/feedpushr"
     mode: u+x,g+x,o+x
 
-- name: Copying env file
-  ansible.builtin.template:
-    src: config.env.j2
-    dest: "{{ feedpushr_install_dir }}/config.env"
-    owner: "{{ feedpushr_user }}"
-    group: "{{ feedpushr_group }}"
-    mode: "0644"
+# - name: Copying env file
+#   ansible.builtin.template:
+#     src: config.env.j2
+#     dest: "{{ feedpushr_install_dir }}/config.env"
+#     owner: "{{ feedpushr_user }}"
+#     group: "{{ feedpushr_group }}"
+#     mode: "0644"
 
 - name: Creating basic auth file
   shell: 'htpasswd -b -B -c {{ feedpushr_authn }} {{feedpushr_admin_user}} "{{feedpushr_admin_psw}}"'
+
+- name: Copying running script
+  ansible.builtin.template:
+    src: start.sh.j2
+    dest: "{{ feedpushr_install_dir }}/start.sh"
+    owner: "{{ feedpushr_user }}"
+    group: "{{ feedpushr_group }}"
+    mode: "0755"
 
 - name: Copying service file
   ansible.builtin.template:

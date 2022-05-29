@@ -5,8 +5,7 @@ After=network.target
 [Service]
 User={{ feedpushr_user }}
 Group={{ feedpushr_group }}
-EnvironmentFile={{ feedpushr_install_dir }}/config.env
-ExecStart={{ feedpushr_install_dir }}/feedpushr
+ExecStart={{ feedpushr_install_dir }}/start.sh
 
 [Install]
 WantedBy=multi-user.target
