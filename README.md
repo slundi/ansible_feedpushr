@@ -59,6 +59,8 @@ Nothing, the author of feedpusher is providing all binaries for common Linux arc
   * Prose: `feedpushr-prose.so`
   * RAKE: `feedpushr-rake.so`
 
+Output and Filter's configuration are stored inside the Feedpushr DB (Bolt). The configuration is managed by the API or the UI.
+
 ## Dependencies
 
 None but with some plugins you may need to install some stuffs.
