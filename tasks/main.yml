@@ -93,7 +93,7 @@
 - name: Creating basic auth file
   shell: 'htpasswd -b -B -c {{ feedpushr_authn }} {{feedpushr_admin_user}} "{{feedpushr_admin_psw}}"'
   args:
-    chdir: "{{ feedpushr_install_dir }}""
+    chdir: "{{ feedpushr_install_dir }}"
 
 - name: Copying running script
   ansible.builtin.template:
